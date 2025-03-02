@@ -1,2 +1,1 @@
-# elsikkerhed
-Automatiseret sikkerhedskontrolsystem til elektriske installationer
+# Elsikkerhed Projekt
