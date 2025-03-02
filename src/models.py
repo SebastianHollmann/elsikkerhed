@@ -9,11 +9,11 @@ class TestStatus(Enum):
     WARNING = "Advarsel"
 
 class TestType(Enum):
-    RCD = "HPFI"
-    INSULATION = "Isolationsmodstand"
-    CONTINUITY = "Kontinuitet"
-    SHORT_CIRCUIT = "Kortslutningsstrøm"
-    GROUND_SPIKE = "Jordspyd"
+    RCD = "RCD Test"
+    ISOLATION = "Isolationstest"
+    CONTINUITY = "Kontinuitetstest"
+    EARTHING = "Jordingstest"
+    SHORT_CIRCUIT = "Kortslutningstest"
 
 @dataclass
 class TestResult:
@@ -21,9 +21,13 @@ class TestResult:
     value: float
     unit: str
     status: TestStatus
-    timestamp: datetime = datetime.now()
     notes: Optional[str] = None
     image_path: Optional[str] = None
+    timestamp: datetime = None
+    
+    def __post_init__(self):
+        if self.timestamp is None:
+            self.timestamp = datetime.now()
 
 @dataclass
 class Installation:
@@ -36,10 +40,22 @@ class Installation:
     
     def __post_init__(self):
         if self.tests is None:
-            self.test = []
+            self.tests = []
     
     def add_test(self, test: TestResult):
-        self.test.append(test)
+        """
+        Add a test result to this installation.
+        
+        Args:
+            test: A TestResult object to add
+        
+        Raises:
+            TypeError: If test is not a TestResult object
+        """
+        if not isinstance(test, TestResult):
+            raise TypeError("Test must be a TestResult object")
+            
+        self.tests.append(test)
         self.last_inspection = datetime.now()
         
    
