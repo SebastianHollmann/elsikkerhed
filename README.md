@@ -1,0 +1,2 @@
+# elsikkerhed
+Automatiseret sikkerhedskontrolsystem til elektriske installationer
