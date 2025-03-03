@@ -1,7 +1,7 @@
 import sqlite3
 import logging
 from typing import Optional
-from models import Installation, TestResult
+from src.models import Installation, TestResult
 
 def save_installation(conn, installation: Installation) -> bool:
     """
