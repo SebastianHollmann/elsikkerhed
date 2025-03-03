@@ -1,5 +1,5 @@
 import logging
-from models import TestStatus
+from src.models import TestStatus
 
 def validate_rcd_test(tripping_time_ms: float, rated_current_ma: float = 30) -> TestStatus:
     """

@@ -38,4 +38,4 @@ class TestResponse(TestBase):
     timestamp: datetime
 
     class Config:
-        orm_mode = True  # Tillader konvertering fra ORM modeller
+        from_attributes = True  # Tillader konvertering fra ORM modeller (tidligere orm_mode)
