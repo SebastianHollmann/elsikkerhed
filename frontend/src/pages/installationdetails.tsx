@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { deleteInstallation, getInstallation } from '../api/installations';
-import { getTestsByInstallation } from '../api/tests';
+import { getTestsByInstallation } from '../api/test';
 import { useAuth } from '../contexts/AuthContext';
 import { Installation } from '../models/installation';
 import { Test, TestStatus, TestType } from '../models/test';
@@ -89,7 +89,7 @@ const InstallationDetails: React.FC = () => {
   };
 
   // Funktion til at få ikon baseret på testtype
-  const getTestTypeIcon = (testType: TestType): JSX.Element => {
+  const getTestTypeIcon = (testType: TestType): React.ReactElement => {
     switch (testType) {
       case TestType.RCD:
         return (

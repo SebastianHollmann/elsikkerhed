@@ -41,16 +41,16 @@ export const getTestsByInstallation = async (token: string, installationId: stri
 /**
  * Henter et specifikt testresultat
  */
-export const getTest = async (token: string, id: number): Promise<Test> => {
+export const getTest = async (token: string, testId: string): Promise<Test> => {
   try {
-    const response = await axios.get(`${API_URL}/tests/${id}`, {
+    const response = await axios.get(`${API_URL}/tests/${testId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
     return response.data;
   } catch (error) {
-    console.error(`Fejl ved hentning af test ${id}:`, error);
+    console.error(`Fejl ved hentning af test ${testId}:`, error);
     throw new Error('Kunne ikke hente test');
   }
 };
@@ -76,9 +76,9 @@ export const createTest = async (token: string, test: TestCreate): Promise<Test>
 /**
  * Opdaterer et eksisterende testresultat
  */
-export const updateTest = async (token: string, id: number, testUpdate: TestUpdate): Promise<Test> => {
+export const updateTest = async (token: string, testId: string, testUpdate: TestUpdate): Promise<Test> => {
   try {
-    const response = await axios.put(`${API_URL}/tests/${id}`, testUpdate, {
+    const response = await axios.put(`${API_URL}/tests/${testId}`, testUpdate, {
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
@@ -86,7 +86,7 @@ export const updateTest = async (token: string, id: number, testUpdate: TestUpda
     });
     return response.data;
   } catch (error) {
-    console.error(`Fejl ved opdatering af test ${id}:`, error);
+    console.error(`Fejl ved opdatering af test ${testId}:`, error);
     throw new Error('Kunne ikke opdatere test');
   }
 };
@@ -94,15 +94,15 @@ export const updateTest = async (token: string, id: number, testUpdate: TestUpda
 /**
  * Sletter et testresultat
  */
-export const deleteTest = async (token: string, id: number): Promise<void> => {
+export const deleteTest = async (token: string, testId: string): Promise<void> => {
   try {
-    await axios.delete(`${API_URL}/tests/${id}`, {
+    await axios.delete(`${API_URL}/tests/${testId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
   } catch (error) {
-    console.error(`Fejl ved sletning af test ${id}:`, error);
+    console.error(`Fejl ved sletning af test ${testId}:`, error);
     throw new Error('Kunne ikke slette test');
   }
 };

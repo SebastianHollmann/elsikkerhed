@@ -9,19 +9,20 @@ export enum TestType {
   }
   
   export enum TestStatus {
-    PASS = "Godkendt",
-    FAIL = "Ikke godkendt",
-    WARNING = "Advarsel"
+    PASS = "PASS",
+    FAIL = "FAIL",
+    WARNING = "WARNING"
   }
   
   export interface Test {
-    id: number;
-    installation_id: string;
-    test_type: TestType;
-    value: number;
+    id: string | number;
+    installation_id: string | number;
+    test_type: TestType | string;
+    value: number | string;
     unit: string;
-    status: TestStatus;
-    timestamp: string;
+    status: TestStatus | string;
+    timestamp: string | null;
+    technician?: string;
     notes?: string;
     image_path?: string;
   }

@@ -1,20 +1,20 @@
 // src/App.tsx
 import React from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
-import Layout from './components/common/Layout';
-import ProtectedRoute from './components/common/ProtectedRoute';
+import Layout from './components/common/layout';
+import ProtectedRoute from './components/common/protectedroute';
 import { AuthProvider } from './contexts/AuthContext';
-import Dashboard from './pages/Dashboard';
-import InstallationCreate from './pages/InstallationCreate';
-import InstallationDetails from './pages/InstallationDetails';
-import InstallationEdit from './pages/InstallationEdit';
-import Installations from './pages/Installations';
-import Login from './pages/Login';
-import NotFound from './pages/NotFound';
-import TestCreate from './pages/TestCreate';
-import TestDetails from './pages/TestDetails';
-import TestEdit from './pages/TestEdit';
-import TestsList from './pages/TestsList';
+import Dashboard from './pages/dashboard';
+import InstallationCreate from './pages/installationcreate';
+import InstallationDetails from './pages/installationdetails';
+import InstallationEdit from './pages/installationedit';
+import Installations from './pages/installations';
+import Login from './pages/login';
+import NotFound from './pages/notfound';
+import TestCreate from './pages/testcreate';
+import TestDetails from './pages/testdetails';
+import TestEdit from './pages/testedit';
+import TestsList from './pages/testslist';
 
 const App: React.FC = () => {
   return (

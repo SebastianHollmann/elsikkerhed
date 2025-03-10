@@ -1,27 +1,27 @@
-// src/pages/TestCreate.tsx
+// src/pages/testcreate.tsx
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { getInstallation, getInstallations } from '../api/installations';
-import { createTest, uploadTestImage } from '../api/tests';
+import { createTest, uploadTestImage } from '../api/test';
 import { useAuth } from '../contexts/AuthContext';
 import { Installation } from '../models/installation';
-import { TestCreate, TestType } from '../models/test';
+import { TestCreate as TestCreateType, TestType } from '../models/test';
 
-const TestCreatePage: React.FC = () => {
+const TestCreate: React.FC = () => {
   const { authToken } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const installationIdParam = searchParams.get('installation');
+  const preselectedInstallationId = searchParams.get('installation');
   
   const [installations, setInstallations] = useState<Installation[]>([]);
   const [selectedInstallation, setSelectedInstallation] = useState<Installation | null>(null);
   const [isLoadingInstallations, setIsLoadingInstallations] = useState(false);
   
-  const [formData, setFormData] = useState<TestCreate>({
-    installation_id: installationIdParam || '',
-    test_type: TestType.RCD,
+  const [formData, setFormData] = useState<Partial<TestCreateType>>({
+    installation_id: preselectedInstallationId || '',
+    test_type: '' as TestType,
     value: 0,
-    unit: 'ms',
+    unit: '',
     notes: '',
     image_path: '',
   });
@@ -33,47 +33,27 @@ const TestCreatePage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [valueError, setValueError] = useState('');
 
-  // Indlæs installationer, hvis ingen specifik installation er valgt
   useEffect(() => {
     const fetchInstallations = async () => {
       if (!authToken) return;
-      
+
       setIsLoadingInstallations(true);
+      setError(null);
+
       try {
         const installationsData = await getInstallations(authToken);
         setInstallations(installationsData);
       } catch (err) {
         console.error('Error fetching installations:', err);
-        setError('Kunne ikke hente installationer');
+        setError('Der opstod en fejl ved hentning af installationer');
       } finally {
         setIsLoadingInstallations(false);
       }
     };
 
-    // Hvis vi har en installations-ID fra URL-parameteren, så hent bare den specifikke installation
-    const fetchSpecificInstallation = async () => {
-      if (!authToken || !installationIdParam) return;
-      
-      setIsLoadingInstallations(true);
-      try {
-        const installation = await getInstallation(authToken, installationIdParam);
-        setSelectedInstallation(installation);
-      } catch (err) {
-        console.error('Error fetching installation:', err);
-        setError('Kunne ikke hente den valgte installation');
-      } finally {
-        setIsLoadingInstallations(false);
-      }
-    };
+    fetchInstallations();
+  }, [authToken]);
 
-    if (installationIdParam) {
-      fetchSpecificInstallation();
-    } else {
-      fetchInstallations();
-    }
-  }, [authToken, installationIdParam]);
-
-  // Opdater enhed baseret på testtype
   useEffect(() => {
     let unit = '';
     switch (formData.test_type) {
@@ -149,14 +129,9 @@ const TestCreatePage: React.FC = () => {
     e.preventDefault();
     if (!authToken) return;
 
-    // Validering
-    if (!formData.installation_id) {
-      setError('Vælg venligst en installation');
-      return;
-    }
-
-    if (valueError) {
-      setError('Ret venligst fejlene i formularen');
+    // Validate form
+    if (!formData.installation_id || !formData.test_type || formData.value === undefined || !formData.unit) {
+      setError('Udfyld venligst alle påkrævede felter');
       return;
     }
 
@@ -177,21 +152,13 @@ const TestCreatePage: React.FC = () => {
         image_path: imagePath || formData.image_path,
       };
 
-      await createTest(authToken, testData);
+      const newTest = await createTest(authToken, testData as TestCreateType);
       
-      // Naviger tilbage til installationsdetaljer eller oversigt
-      if (formData.installation_id) {
-        navigate(`/installations/${formData.installation_id}`);
-      } else {
-        navigate('/tests');
-      }
+      // Naviger tilbage til testdetaljer
+      navigate(`/tests/${newTest.id}`);
     } catch (err) {
       console.error('Error creating test:', err);
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError('Der opstod en fejl ved oprettelse af testen');
-      }
+      setError('Der opstod en fejl ved oprettelse af testen');
       setIsSubmitting(false);
     }
   };
@@ -246,11 +213,19 @@ const TestCreatePage: React.FC = () => {
 
   const typeHint = getTestTypeHint();
 
+  if (isLoadingInstallations) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto px-4 py-6">
       <div className="max-w-3xl mx-auto">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold">Registrer Ny Test</h1>
+          <h1 className="text-2xl font-bold">Opret Ny Test</h1>
           <div>
             {formData.installation_id && (
               <Link
@@ -285,42 +260,21 @@ const TestCreatePage: React.FC = () => {
               <label htmlFor="installation_id" className="block text-sm font-medium text-gray-700 mb-1">
                 Installation <span className="text-red-500">*</span>
               </label>
-              {isLoadingInstallations ? (
-                <div className="flex items-center">
-                  <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-blue-500 mr-2"></div>
-                  <span className="text-sm">Indlæser installationer...</span>
-                </div>
-              ) : installationIdParam ? (
-                <div className="flex items-center text-gray-700 bg-gray-100 px-3 py-2 rounded border border-gray-300">
-                  {selectedInstallation ? (
-                    <>
-                      <span className="font-medium">{selectedInstallation.id}</span>
-                      <span className="mx-2">-</span>
-                      <span>{selectedInstallation.address}</span>
-                      <span className="mx-2">-</span>
-                      <span className="text-gray-600">{selectedInstallation.customer_name}</span>
-                    </>
-                  ) : (
-                    <span>Installation: {installationIdParam}</span>
-                  )}
-                </div>
-              ) : (
-                <select
-                  id="installation_id"
-                  name="installation_id"
-                  className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
-                  value={formData.installation_id}
-                  onChange={handleInstallationChange}
-                  required
-                >
-                  <option value="">Vælg installation</option>
-                  {installations.map((installation) => (
-                    <option key={installation.id} value={installation.id}>
-                      {installation.id} - {installation.address} - {installation.customer_name}
-                    </option>
-                  ))}
-                </select>
-              )}
+              <select
+                id="installation_id"
+                name="installation_id"
+                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+                value={formData.installation_id || ''}
+                onChange={handleInstallationChange}
+                required
+              >
+                <option value="">Vælg installation</option>
+                {installations.map((installation) => (
+                  <option key={installation.id} value={installation.id}>
+                    {installation.id} - {installation.address} - {installation.customer_name}
+                  </option>
+                ))}
+              </select>
 
               {selectedInstallation && (
                 <div className="mt-2 p-3 bg-gray-50 rounded border border-gray-200">
@@ -350,15 +304,16 @@ const TestCreatePage: React.FC = () => {
                   id="test_type"
                   name="test_type"
                   className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
-                  value={formData.test_type}
+                  value={formData.test_type || ''}
                   onChange={handleChange}
                   required
                 >
-                  {Object.values(TestType).map((type) => (
-                    <option key={type} value={type}>
-                      {type}
-                    </option>
-                  ))}
+                  <option value="">Vælg test type</option>
+                  <option value={TestType.RCD}>{TestType.RCD}</option>
+                  <option value={TestType.ISOLATION}>{TestType.ISOLATION}</option>
+                  <option value={TestType.CONTINUITY}>{TestType.CONTINUITY}</option>
+                  <option value={TestType.EARTHING}>{TestType.EARTHING}</option>
+                  <option value={TestType.SHORT_CIRCUIT}>{TestType.SHORT_CIRCUIT}</option>
                 </select>
               </div>
 
@@ -405,7 +360,7 @@ const TestCreatePage: React.FC = () => {
                   rows={3}
                   className="shadow-sm focus:ring-blue-500 focus:border-blue-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md"
                   placeholder="Eventuelle bemærkninger til testen, f.eks. '30 mA Type A RCD', 'Kap. 6', etc."
-                  value={formData.notes}
+                  value={formData.notes || ''}
                   onChange={handleChange}
                 ></textarea>
               </div>
@@ -497,7 +452,7 @@ const TestCreatePage: React.FC = () => {
                     Gemmer...
                   </>
                 ) : (
-                  'Gem Test'
+                  'Opret Test'
                 )}
               </button>
             </div>
@@ -508,4 +463,4 @@ const TestCreatePage: React.FC = () => {
   );
 };
 
-export default TestCreatePage;
+export default TestCreate;
