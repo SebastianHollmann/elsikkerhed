@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { deleteTest, getTest } from '../api/test';
+import { deleteTest, getTest } from '../api/tests';
 import { useAuth } from '../contexts/AuthContext';
 import { Test, TestStatus, TestType } from '../models/test';
 

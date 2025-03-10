@@ -204,7 +204,7 @@ const Dashboard: React.FC = () => {
                     <p className="font-medium text-blue-600 truncate">
                       {test.test_type}
                     </p>
-                    <div className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(test.status)}`}>
+                    <div className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(test.status as TestStatus)}`}>
                       {test.status}
                     </div>
                   </div>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getTest, updateTest } from '../api/test';
+import { getTest, updateTest } from '../api/tests';
 import { useAuth } from '../contexts/AuthContext';
 import { Test, TestStatus, TestUpdate } from '../models/test';
 

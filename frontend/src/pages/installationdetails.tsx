@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { deleteInstallation, getInstallation } from '../api/installations';
-import { getTestsByInstallation } from '../api/test';
+import { getTestsByInstallation } from '../api/tests';
 import { useAuth } from '../contexts/AuthContext';
 import { Installation } from '../models/installation';
 import { Test, TestStatus, TestType } from '../models/test';
