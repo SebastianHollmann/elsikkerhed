@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import logging
 import os
 import sys
+from api.endpoints import tasks
 
 # Tilføj projektets rodmappe til Python's path, så vi kan importere fra src
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -35,7 +36,7 @@ from api.endpoints import auth, installations, tests
 app.include_router(auth.router, prefix="/auth", tags=["Autentificering"])
 app.include_router(installations.router, prefix="/installations", tags=["Installationer"])
 app.include_router(tests.router, prefix="/tests", tags=["Tests"])
-
+app.include_router(tasks.router, prefix="/tasks", tags=["Opgaver"])
 @app.get("/", tags=["Root"])
 async def root():
     """

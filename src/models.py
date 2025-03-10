@@ -58,4 +58,36 @@ class Installation:
         self.tests.append(test)
         self.last_inspection = datetime.now()
         
+class TaskStatus(Enum):
+    PLANNED = "Planlagt"
+    IN_PROGRESS = "I gang"
+    COMPLETED = "Afsluttet"
+    CANCELLED = "Annulleret"
+
+class TaskPriority(Enum):
+    LOW = "Lav"
+    MEDIUM = "Medium"
+    HIGH = "Høj"
+    URGENT = "Akut"
+
+@dataclass
+class Task:
+    id: str
+    title: str
+    description: Optional[str]
+    status: TaskStatus
+    priority: TaskPriority
+    installation_id: str
+    created_date: datetime
+    due_date: Optional[datetime]
+    completed_date: Optional[datetime]
+    assigned_to: Optional[str]
+    estimated_hours: Optional[float]
+    actual_hours: Optional[float]
+    notes: Optional[str]
+    
+    def __post_init__(self):
+        if self.created_date is None:
+            self.created_date = datetime.now()
+        
    

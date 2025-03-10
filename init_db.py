@@ -55,6 +55,25 @@ def init_database():
         )                    
         ''')
         
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS tasks (
+            id TEXT PRIMARY KEY,
+            title TEXT NOT NULL,
+            description TEXT,
+            status TEXT NOT NULL,
+            priority TEXT NOT NULL,
+            installation_id TEXT,
+            created_date TEXT NOT NULL,
+            due_date TEXT,
+            completed_date TEXT,
+            assigned_to TEXT,
+            estimated_hours REAL,
+            actual_hours REAL,
+            notes TEXT,
+            FOREIGN KEY (installation_id) REFERENCES installations (id)
+        )                    
+        ''')
+        
         conn.commit()
         logging.info(f"Database initialiseret korrekt i {DB_PATH}")
         

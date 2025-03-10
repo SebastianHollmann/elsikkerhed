@@ -11,6 +11,10 @@ import InstallationEdit from './pages/installationedit';
 import Installations from './pages/installations';
 import Login from './pages/login';
 import NotFound from './pages/notfound';
+import TaskCreate from './pages/taskcreate';
+import TaskDetails from './pages/taskdetails';
+import TaskEdit from './pages/taskedit';
+import TasksList from './pages/taskslist';
 import TestCreate from './pages/testcreate';
 import TestDetails from './pages/testdetails';
 import TestEdit from './pages/testedit';
@@ -39,6 +43,14 @@ const App: React.FC = () => {
               <Route path="new" element={<TestCreate />} />
               <Route path=":testId" element={<TestDetails />} />
               <Route path=":testId/edit" element={<TestEdit />} />
+
+            </Route>
+
+            <Route path="tasks">
+              <Route index element={<TasksList />} />
+              <Route path="new" element={<TaskCreate />} />
+              <Route path=":taskId" element={<TaskDetails />} />
+              <Route path=":taskId/edit" element={<TaskEdit />} />
             </Route>
           </Route>
           
